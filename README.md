@@ -1,2 +1,4 @@
 # pipex
-This project has the same functionality as the "pipe" command from Shell.
+This project replicates the functionality from the "pipe" command from Shell.
+
+Example : ls -l || wc -l
