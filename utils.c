@@ -6,7 +6,7 @@
 /*   By: kroyo-di <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 17:53:47 by kroyo-di          #+#    #+#             */
-/*   Updated: 2024/10/20 18:49:56 by kroyo-di         ###   ########.fr       */
+/*   Updated: 2024/11/26 18:18:23 by kroyo-di         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "pipex.h"
@@ -33,7 +33,7 @@ char	*ft_getenv(char *name, char **envp)
 		j = 0;
 		while (envp[i][j] && envp[i][j] != '=')
 			j++;
-	if (ft_strncmp(envp[i], name, j) == 0 && name[j] == '\0')
+		if (ft_strncmp(envp[i], name, j) == 0 && name[j] == '\0')
 			return (envp[i] + j + 1);
 		i++;
 	}
@@ -68,4 +68,24 @@ char	*get_path(char *cmd, char **envp)
 	ft_free_tab(s_cmd);
 	ft_free_tab(full_path);
 	return (cmd);
+}
+
+void	error_handler(int error)
+{
+	if (error == 1)
+		perror("Error ocurred while creating pipe.");
+	else if (error == 2)
+		perror("Error ocurred while creating first fork.");
+	else if (error == 3)
+		perror("Error ocurred while creating second fork.");
+	else if (error == 4)
+	{
+		perror("Error ocurred while executing execve().");
+		exit(127);
+	}
+	else if (error == 4)
+		perror("Unable to open file.");
+	else
+		perror("Error.");
+	exit(EXIT_FAILURE);
 }
