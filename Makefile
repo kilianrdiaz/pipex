@@ -6,7 +6,7 @@
 #    By: kroyo-di <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/02 15:29:13 by kroyo-di          #+#    #+#              #
-#    Updated: 2024/11/27 22:06:59 by kroyo-di         ###   ########.fr        #
+#    Updated: 2024/11/28 18:27:45 by kroyo-di         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,10 +39,10 @@ $(LIBFT):
 %.o: %.c pipex.h 
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-bonus: $(BONUS_NAME) 
+#bonus: $(BONUS_NAME)
 
-$(BONUS_NAME): $(BONUS_OBJ) $(LIBFT)
-	$(CC) $(CFLAGS) -o $@ $^ -L$(LIBFT_DIR) -lft
+bonus: $(BONUS_OBJ) $(LIBFT)
+	$(CC) $(CFLAGS) -o $(NAME) $^ -L$(LIBFT_DIR) -lft
 
 clean:
 	@$(MAKE) clean -C $(LIBFT_DIR)

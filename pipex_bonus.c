@@ -6,10 +6,11 @@
 /*   By: kroyo-di <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 15:23:38 by kroyo-di          #+#    #+#             */
-/*   Updated: 2024/11/27 22:03:47 by kroyo-di         ###   ########.fr       */
+/*   Updated: 2024/11/28 20:18:30 by kroyo-di         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "pipex_bonus.h"
+#include <stdio.h>
 
 void	exec(char *cmd, char **envp)
 {
@@ -23,6 +24,8 @@ void	exec(char *cmd, char **envp)
 		ft_free_tab(s_cmd);
 		error_handler(4);
 	}
+	ft_free_tab(s_cmd);
+	free(path);
 }
 
 void	here_doc(char *limiter, int argc)
@@ -56,56 +59,63 @@ void	here_doc(char *limiter, int argc)
 	}
 }
 
-void	child(char *cmd, char **envp)
+int	child(char *cmd, char **envp, char **argv, int argc)
 {
 	int		pipefd[2];
 	pid_t	pid;
+	int		status;
+	int		pos;
 
 	if (pipe(pipefd) == -1)
 		error_handler(1);
 	pid = fork();
 	if (pid < 0)
 		error_handler(2);
+	pos = open_file(cmd, argv, argc);
 	if (pid == 0)
 	{
 		close(pipefd[0]);
-		dup2(pipefd[1], STDOUT_FILENO);
+		if (pos != 2)
+			dup2(pipefd[1], STDOUT_FILENO);
 		exec(cmd, envp);
 	}
 	else
 	{
 		close(pipefd[1]);
-		dup2(pipefd[1], STDIN_FILENO);
-		waitpid(pid, NULL, 0);
+		if (pos == 1)
+			dup2(pipefd[0], STDIN_FILENO);
 	}
+	waitpid(pid, &status, 0);
+	return (status);
 }
 
 int	main(int argc, char **argv, char **envp)
 {
 	int		i;
-	int		infile;
-	int		outfile;
+	int		status;
 
 	if (argc < 5)
 		return (0);
-	if (ft_strncmp(argv[1], "here_doc", 8))
+	if (ft_strncmp(argv[1], "here_doc", 8) == 0)
 	{ 
 		i = 3;
-		outfile = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0777);
+		//outfile = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0777);
 		here_doc(argv[2], argc);
 	}
 	else
 	{
 		i = 2;
-		infile = open(argv[1], O_RDONLY);
+		/*infile = open(argv[1], O_RDONLY);
 		outfile = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0777);
-		if (outfile == -1 || infile == -1)
+		if (outfile < 0 || infile < 0)
 			error_handler(5);
-		dup2(infile, STDIN_FILENO);
+		dup2(infile, STDIN_FILENO);*/
 	}
-	while (i < (argc - 2))
-		child(argv[i++], envp);
-	dup2(outfile, STDOUT_FILENO);
+	status = child(argv[i++], envp, argv, argc);
+	while (i < (argc - 1) && WEXITSTATUS(status) == 0)
+		status = child(argv[i++], envp, argv, argc);
+	/*dup2(outfile, STDOUT_FILENO);
 	exec(argv[argc - 2], envp);
-	exit(EXIT_SUCCESS);
+	error_handler(4);*/
+	return (WEXITSTATUS(status));
 }
