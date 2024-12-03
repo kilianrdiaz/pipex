@@ -90,20 +90,19 @@ void	error_handler(int error)
 	exit(EXIT_FAILURE);
 }
 
-int	open_file(char *cmd, char **argv, int argc)
+/*int	open_file(char **argv, int argc, int pos)
 {
 	int	fd;
 
-	if (ft_strcmp(argv[2], cmd) == 0)
+	if (pos == 0)
 	{
 		fd = open(argv[1], O_RDONLY);
 		if (fd == -1)
 			error_handler(5);
 		dup2(fd, STDIN_FILENO);
-		close(fd);
 		return (1);
 	}
-	else if(ft_strcmp(argv[argc - 2], cmd) == 0)
+	else if(pos == 2)
 	{
 		if (ft_strcmp(argv[1], "here_doc") == 0) 
 			fd = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0777);
@@ -112,8 +111,7 @@ int	open_file(char *cmd, char **argv, int argc)
 		if (fd == -1)
 			error_handler(5);
 		dup2(fd, STDOUT_FILENO);
-		close(fd);
 		return (2);
 	}
 	return (0);
-}
+}*/

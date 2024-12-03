@@ -24,6 +24,6 @@
 char	*get_path(char *cmd, char **env);
 void	ft_free_tab(char **tab);
 void	error_handler(int error);
-int		open_file(char *cmd, char **argv, int argc);
+//int		open_file(char **argv, int argc, int pos);
 
 #endif
