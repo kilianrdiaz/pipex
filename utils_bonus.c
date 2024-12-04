@@ -6,10 +6,26 @@
 /*   By: kroyo-di <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 17:53:47 by kroyo-di          #+#    #+#             */
-/*   Updated: 2024/11/28 20:18:14 by kroyo-di         ###   ########.fr       */
+/*   Updated: 2024/12/04 16:02:58 by kroyo-di         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "pipex_bonus.h"
+
+void	exec(char *cmd, char **envp)
+{
+	char	**s_cmd;
+	char	*path;
+
+	s_cmd = ft_split(cmd, ' ');
+	path = get_path(s_cmd[0], envp);
+	if (execve(path, s_cmd, envp) == -1)
+	{
+		ft_free_tab(s_cmd);
+		error_handler(4);
+	}
+	ft_free_tab(s_cmd);
+	free(path);
+}
 
 void	ft_free_tab(char **tab)
 {
@@ -53,7 +69,7 @@ char	*get_path(char *cmd, char **envp)
 	i = 0;
 	while (full_path[i] != NULL)
 	{
-		path = ft_strjoin(full_path[i], "/");
+		path = ft_strjoin(full_path[i++], "/");
 		exec = ft_strjoin(path, s_cmd[0]);
 		free(path);
 		if (access(exec, F_OK | X_OK) == 0)
@@ -63,7 +79,6 @@ char	*get_path(char *cmd, char **envp)
 			return (exec);
 		}
 		free(exec);
-		i++;
 	}
 	ft_free_tab(s_cmd);
 	ft_free_tab(full_path);
@@ -89,29 +104,3 @@ void	error_handler(int error)
 		perror("Error.");
 	exit(EXIT_FAILURE);
 }
-
-/*int	open_file(char **argv, int argc, int pos)
-{
-	int	fd;
-
-	if (pos == 0)
-	{
-		fd = open(argv[1], O_RDONLY);
-		if (fd == -1)
-			error_handler(5);
-		dup2(fd, STDIN_FILENO);
-		return (1);
-	}
-	else if(pos == 2)
-	{
-		if (ft_strcmp(argv[1], "here_doc") == 0) 
-			fd = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0777);
-		else
-			fd = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0777);
-		if (fd == -1)
-			error_handler(5);
-		dup2(fd, STDOUT_FILENO);
-		return (2);
-	}
-	return (0);
-}*/

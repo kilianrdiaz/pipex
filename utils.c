@@ -6,7 +6,7 @@
 /*   By: kroyo-di <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 17:53:47 by kroyo-di          #+#    #+#             */
-/*   Updated: 2024/11/26 18:18:23 by kroyo-di         ###   ########.fr       */
+/*   Updated: 2024/12/04 15:36:56 by kroyo-di         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "pipex.h"
@@ -53,7 +53,7 @@ char	*get_path(char *cmd, char **envp)
 	i = 0;
 	while (full_path[i] != NULL)
 	{
-		path = ft_strjoin(full_path[i], "/");
+		path = ft_strjoin(full_path[i++], "/");
 		exec = ft_strjoin(path, s_cmd[0]);
 		free(path);
 		if (access(exec, F_OK | X_OK) == 0)
@@ -63,7 +63,6 @@ char	*get_path(char *cmd, char **envp)
 			return (exec);
 		}
 		free(exec);
-		i++;
 	}
 	ft_free_tab(s_cmd);
 	ft_free_tab(full_path);

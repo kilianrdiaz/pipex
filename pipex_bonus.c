@@ -6,25 +6,18 @@
 /*   By: kroyo-di <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 15:23:38 by kroyo-di          #+#    #+#             */
-/*   Updated: 2024/11/28 20:18:30 by kroyo-di         ###   ########.fr       */
+/*   Updated: 2024/12/04 16:52:15 by kroyo-di         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "pipex_bonus.h"
 
-void	exec(char *cmd, char **envp)
+void	check_args(int here_doc, int argc)
 {
-	char	**s_cmd;
-	char	*path;
-
-	s_cmd = ft_split(cmd, ' ');
-	path = get_path(s_cmd[0], envp);
-	if (execve(path, s_cmd, envp) == -1)
-	{
-		ft_free_tab(s_cmd);
-		error_handler(4);
-	}
-	ft_free_tab(s_cmd);
-	free(path);
+	if (argc < 5)
+		exit(EXIT_SUCCESS);
+	else if (here_doc == 1 && argc < 6)
+		exit(EXIT_SUCCESS);
+	return ;
 }
 
 void	here_doc(char *limiter, int argc)
@@ -33,8 +26,7 @@ void	here_doc(char *limiter, int argc)
 	int		pipefd[2];
 	char	*line;
 
-	if (argc < 6)
-		exit (EXIT_SUCCESS);
+	check_args(1, argc);
 	if (pipe(pipefd) == -1)
 		error_handler(1);
 	pid = fork();
@@ -54,11 +46,10 @@ void	here_doc(char *limiter, int argc)
 	{
 		close(pipefd[1]);
 		dup2(pipefd[0], STDIN_FILENO);
-		wait(NULL);
 	}
 }
 
-int	child(char *cmd, char **envp)
+int	child(char *cmd, char **envp, int outfile)
 {
 	int		pipefd[2];
 	pid_t	pid;
@@ -72,7 +63,10 @@ int	child(char *cmd, char **envp)
 	if (pid == 0)
 	{
 		close(pipefd[0]);
-		dup2(pipefd[1], STDOUT_FILENO);
+		if (outfile > 0)
+			dup2(outfile, STDOUT_FILENO);
+		else
+			dup2(pipefd[1], STDOUT_FILENO);
 		exec(cmd, envp);
 	}
 	else
@@ -88,13 +82,12 @@ int	main(int argc, char **argv, char **envp)
 {
 	int		i;
 	int		status;
-	int	outfile;
-	int	infile;
+	int		outfile;
+	int		infile;
 
-	if (argc < 5)
-		return (0);
+	check_args(0, argc);
 	if (ft_strncmp(argv[1], "here_doc", 8) == 0)
-	{ 
+	{
 		i = 3;
 		outfile = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0777);
 		here_doc(argv[2], argc);
@@ -108,11 +101,8 @@ int	main(int argc, char **argv, char **envp)
 			error_handler(5);
 		dup2(infile, STDIN_FILENO);
 	}
-	status = child(argv[i++], envp);
-	while (i < (argc - 2) && WEXITSTATUS(status) == 0)
-		status = child(argv[i++], envp);
-	dup2(outfile, STDOUT_FILENO);
-	exec(argv[argc - 2], envp);
-	error_handler(4);
+	while (i < (argc - 2))
+		status = child(argv[i++], envp, 0);
+	status = child(argv[i++], envp, outfile);
 	return (WEXITSTATUS(status));
 }

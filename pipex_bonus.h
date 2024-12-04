@@ -6,7 +6,7 @@
 /*   By: kroyo-di <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 15:23:53 by kroyo-di          #+#    #+#             */
-/*   Updated: 2024/11/28 20:03:36 by kroyo-di         ###   ########.fr       */
+/*   Updated: 2024/12/04 16:05:09 by kroyo-di         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,6 @@
 char	*get_path(char *cmd, char **env);
 void	ft_free_tab(char **tab);
 void	error_handler(int error);
-//int		open_file(char **argv, int argc, int pos);
+void	exec(char *cmd, char **envp);
 
 #endif
