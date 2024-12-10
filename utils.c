@@ -6,7 +6,7 @@
 /*   By: kroyo-di <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 17:53:47 by kroyo-di          #+#    #+#             */
-/*   Updated: 2024/12/04 15:36:56 by kroyo-di         ###   ########.fr       */
+/*   Updated: 2024/12/10 13:36:42 by kroyo-di         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "pipex.h"
@@ -71,20 +71,26 @@ char	*get_path(char *cmd, char **envp)
 
 void	error_handler(int error)
 {
-	if (error == 1)
-		perror("Error ocurred while creating pipe.");
+	if (error == 0)
+	{
+		ft_putstr_fd("Wrong arguments: ./pipex file1 cmd1 cmd2 file2 : ", 0);
+		ft_putstr_fd(strerror(22), 0);
+		ft_putstr_fd("\n", 0);
+	}
+	else if (error == 1)
+		perror("Error ocurred while creating pipe");
 	else if (error == 2)
-		perror("Error ocurred while creating first fork.");
+		perror("Error ocurred while creating first fork");
 	else if (error == 3)
-		perror("Error ocurred while creating second fork.");
+		perror("Error ocurred while creating second fork");
 	else if (error == 4)
 	{
-		perror("Error ocurred while executing execve().");
+		perror("Error ocurred while executing execve()");
 		exit(127);
 	}
-	else if (error == 4)
-		perror("Unable to open file.");
+	else if (error == 5)
+		perror("Unable to open file");
 	else
-		perror("Error.");
+		perror("Error");
 	exit(EXIT_FAILURE);
 }

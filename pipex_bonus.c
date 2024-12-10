@@ -6,7 +6,7 @@
 /*   By: kroyo-di <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 15:23:38 by kroyo-di          #+#    #+#             */
-/*   Updated: 2024/12/04 16:52:15 by kroyo-di         ###   ########.fr       */
+/*   Updated: 2024/12/10 14:18:31 by kroyo-di         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "pipex_bonus.h"
@@ -14,9 +14,9 @@
 void	check_args(int here_doc, int argc)
 {
 	if (argc < 5)
-		exit(EXIT_SUCCESS);
+		error_handler(0);
 	else if (here_doc == 1 && argc < 6)
-		exit(EXIT_SUCCESS);
+		error_handler(0);
 	return ;
 }
 

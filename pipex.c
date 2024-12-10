@@ -6,7 +6,7 @@
 /*   By: kroyo-di <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 15:23:38 by kroyo-di          #+#    #+#             */
-/*   Updated: 2024/11/26 18:18:51 by kroyo-di         ###   ########.fr       */
+/*   Updated: 2024/12/10 13:40:05 by kroyo-di         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "pipex.h"
@@ -42,7 +42,7 @@ void	second_child(char **argv, int *pipefd, char **envp)
 {
 	int	fd;
 
-	fd = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	fd = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd == -1)
 		error_handler(5);
 	dup2(fd, STDOUT_FILENO);
@@ -56,10 +56,10 @@ int	main(int argc, char **argv, char **envp)
 	int		pipefd[2];
 	pid_t	pid1;
 	pid_t	pid2;
-	int		estado;
+	int		status;
 
 	if (argc != 5)
-		return (0);
+		error_handler(0);
 	if (pipe(pipefd) == -1)
 		error_handler(1);
 	pid1 = fork();
@@ -75,6 +75,6 @@ int	main(int argc, char **argv, char **envp)
 	close(pipefd[0]);
 	close(pipefd[1]);
 	waitpid(pid1, NULL, 0);
-	waitpid(pid2, &estado, 0);
-	return (WEXITSTATUS(estado));
+	waitpid(pid2, &status, 0);
+	return (WEXITSTATUS(status));
 }

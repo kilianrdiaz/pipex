@@ -6,7 +6,7 @@
 /*   By: kroyo-di <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/10 17:53:47 by kroyo-di          #+#    #+#             */
-/*   Updated: 2024/12/04 16:02:58 by kroyo-di         ###   ########.fr       */
+/*   Updated: 2024/12/10 14:18:59 by kroyo-di         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "pipex_bonus.h"
@@ -87,7 +87,9 @@ char	*get_path(char *cmd, char **envp)
 
 void	error_handler(int error)
 {
-	if (error == 1)
+	if (error == 0)
+		ft_putstr_fd("Wrong number of arguments.\n", 0);
+	else if (error == 1)
 		perror("Error ocurred while creating pipe.");
 	else if (error == 2)
 		perror("Error ocurred while creating first fork.");
